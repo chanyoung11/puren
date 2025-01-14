@@ -84,33 +84,57 @@
         }
 
         const numbers = Array.from({ length: inputNumber }, (_, i) => i + 1);
-        const shuffledNumbers = numbers.sort(() => Math.random() - 0.5);
         const matches = {};
-        const usedNumbers = new Set();
+        const matchCounts = {};
 
         for (let i = 1; i <= inputNumber; i++) {
-          let match;
-          do {
-            match = shuffledNumbers[Math.floor(Math.random() * inputNumber)];
-          } while (match === i || usedNumbers.has(match));
-          matches[i] = match;
-          usedNumbers.add(match);
+          matches[i] = [];
+          matchCounts[i] = 0;
         }
 
-        if (inputNumber % 2 === 1) {
-          const lastNumber = inputNumber;
-          let availableMatches = [...usedNumbers].filter(
-            (num) => num !== lastNumber
-          );
-          matches[lastNumber] =
-            availableMatches[
-              Math.floor(Math.random() * availableMatches.length)
-            ];
+        for (let i = 1; i <= inputNumber; i++) {
+          while (matches[i].length < 3) {
+            const availableNumbers = numbers.filter(
+              (num) =>
+                num !== i && matchCounts[num] < 3 && !matches[i].includes(num)
+            );
+            if (availableNumbers.length === 0) break;
+
+            const randomIndex = Math.floor(
+              Math.random() * availableNumbers.length
+            );
+            const match = availableNumbers[randomIndex];
+
+            matches[i].push(match);
+            matchCounts[match]++;
+          }
         }
 
-        for (const [key, value] of Object.entries(matches)) {
-          resultDiv.innerHTML += `<div class="result-item">${key} → ${value}</div>`;
+        for (let i = 1; i <= inputNumber; i++) {
+          while (matches[i].length < 3) {
+            const availableNumbers = numbers.filter(
+              (num) => num !== i && matchCounts[num] < 3
+            );
+            if (availableNumbers.length === 0) break;
+
+            const randomIndex = Math.floor(
+              Math.random() * availableNumbers.length
+            );
+            const match = availableNumbers[randomIndex];
+
+            matches[i].push(match);
+            matchCounts[match]++;
+          }
         }
+
+        const sortedKeys = Object.keys(matches).sort((a, b) => a - b);
+        sortedKeys.forEach((key) => {
+          resultDiv.innerHTML += `<div class="result-item">${key} → ${matches[
+            key
+          ]
+            .sort((a, b) => a - b)
+            .join(", ")}</div>`;
+        });
       }
     </script>
   </body>
