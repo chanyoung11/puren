@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2025 중보자 선정!</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        color: #333;
+      }
+      .input-container {
+        display: flex;
+        align-items: center;
+      }
+      input[type="number"] {
+        width: 120px;
+        padding: 15px;
+        margin-right: 10px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        font-size: 20px;
+        box-sizing: border-box;
+        height: 50px;
+      }
+      button {
+        width: 120px;
+        padding: 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 20px;
+        cursor: pointer;
+        height: 50px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #result {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+      .result-item {
+        margin: 5px 0;
+        font-size: 18px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>2025 중보자 선정!</h1>
+    <p>높은 뜻 푸른교회 LIKE</p>
+    <div class="input-container">
+      <input type="number" id="numberInput" min="1" placeholder="숫자" />
+      <button onclick="matchNumbers()">매칭하기</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      function matchNumbers() {
+        const inputNumber = parseInt(
+          document.getElementById("numberInput").value
+        );
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "";
+        if (isNaN(inputNumber) || inputNumber < 1) {
+          resultDiv.innerHTML = "숫자로 입력해주시기 바랍니다 총무님";
+          return;
+        }
+
+        const numbers = Array.from({ length: inputNumber }, (_, i) => i + 1);
+        const shuffledNumbers = numbers.sort(() => Math.random() - 0.5);
+        const matches = {};
+        const usedNumbers = new Set();
+
+        for (let i = 1; i <= inputNumber; i++) {
+          let match;
+          do {
+            match = shuffledNumbers[Math.floor(Math.random() * inputNumber)];
+          } while (match === i || usedNumbers.has(match));
+          matches[i] = match;
+          usedNumbers.add(match);
+        }
+
+        if (inputNumber % 2 === 1) {
+          const lastNumber = inputNumber;
+          let availableMatches = [...usedNumbers].filter(
+            (num) => num !== lastNumber
+          );
+          matches[lastNumber] =
+            availableMatches[
+              Math.floor(Math.random() * availableMatches.length)
+            ];
+        }
+
+        for (const [key, value] of Object.entries(matches)) {
+          resultDiv.innerHTML += `<div class="result-item">${key} → ${value}</div>`;
+        }
+      }
+    </script>
+  </body>
+</html>
